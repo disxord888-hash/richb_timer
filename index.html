@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Richb Calendar Timer</title>
+    <!-- Fonts: Reverted to System Defaults -->
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <!-- Android / iOS Native Feel -->
+    <meta name="theme-color" content="#050505">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RichbTimer">
+</head>
+
+<body class="mode-normal">
+    <script>
+        // Check for Service Worker support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .catch(err => console.log('SW Registration Failed', err));
+        }
+    </script>
+    <div class="ambient-glow"></div>
+
+    <div id="app-container">
+        <!-- Header / Toolbar -->
+        <header class="app-header">
+            <div class="app-title-group">
+                <img src="icon.png" class="app-icon" alt="Richb Icon">
+                <div class="app-title">Richb Timer</div>
+            </div>
+            <div class="mode-switches">
+                <button class="btn-icon btn-mode" data-mode="normal" title="Normal">🔳</button>
+                <button class="btn-icon btn-mode" data-mode="view-only" title="View Only">👁️</button>
+                <button id="btn-quick-input" class="btn-icon" title="Quick Input">⌨️</button>
+                <button id="btn-converter" class="btn-icon" title="Converter">⇄</button>
+                <button id="btn-theme" class="btn-icon" title="Theme">🎨</button>
+                <button id="btn-backup" class="btn-icon" title="Backup/Restore">💾</button>
+                <button id="btn-help" class="btn-icon" title="Help">❓</button>
+            </div>
+        </header>
+
+        <!-- Main Display -->
+        <section class="richb-clock">
+            <div id="richb-main" class="richb-main">0.0L</div>
+            <div id="real-time" class="real-time">0000 Yr 00 month 00 day 00:00:00.0</div>
+            <div id="elapsed-real-time" class="real-time" style="font-size: 0.9rem; opacity: 0.6; margin-top: 4px;">
+                Elapsed: 0y 0d 00:00:00.0</div>
+            <!-- Timer Display Moved Here -->
+            <div id="timer-display" class="timer-display hidden">0.0L</div>
+        </section>
+
+        <!-- Controls -->
+        <section class="controls">
+            <!-- Base Time Setting -->
+            <div class="control-group">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                    <label class="control-label" style="margin:0;">Base Point (0.0L)</label>
+                    <button id="btn-save-base-preset" class="btn-primary" title="Save Current"
+                        style="padding:6px 12px; font-size:0.8rem; width:auto;">💾 SAVE</button>
+                </div>
+                <div id="base-presets-list" class="preset-list" style="margin-bottom: 0.5rem;">
+                    <!-- Base presets will be injected here -->
+                </div>
+                <div class="input-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                    <div class="base-input-grid">
+                        <div class="unit-box"><label>Year</label><input type="number" id="base-yr" placeholder="2026">
+                        </div>
+                        <div class="unit-box"><label>Mo</label><input type="number" id="base-mo" min="1" max="12"
+                                placeholder="1"></div>
+                        <div class="unit-box"><label>Day</label><input type="number" id="base-dy" min="1" max="31"
+                                placeholder="1"></div>
+                        <div class="unit-box"><label>Hr</label><input type="number" id="base-hr" min="0" max="23"
+                                placeholder="0"></div>
+                        <div class="unit-box"><label>Min</label><input type="number" id="base-mn" min="0" max="59"
+                                placeholder="0"></div>
+                        <div class="unit-box"><label>Sec</label><input type="number" id="base-sc" min="0" max="59"
+                                placeholder="0"></div>
+                    </div>
+                    <button id="btn-set-today" class="btn-primary" style="width: 100%; padding: 10px;">↺ RESET TO
+                        NOW</button>
+                </div>
+            </div>
+
+            <!-- Alarm Setting -->
+            <div class="control-group">
+                <label class="control-label">Alarm (Time)</label>
+                <div class="input-group">
+                    <input type="text" id="alarm-input" placeholder="e.g. 500L, 10o, 1h 30m">
+                    <button id="btn-toggle-alarm" class="btn-primary">🔔 Set Alarm</button>
+                </div>
+                <div id="alarm-unit-input-group" style="margin-top: 0.5rem;">
+                    <!-- Unit-wise Inputs (Alarm) -->
+                    <div class="unit-input-area" data-target="alarm-input">
+                        <div
+                            style="font-size: 0.7rem; color: var(--text-dim); margin-bottom: 4px; font-weight: 600; letter-spacing: 0.5px;">
+                            QUICK INPUT</div>
+                        <div class="unit-input-grid richb-grid">
+                            <div class="unit-box"><label>Y</label><input type="number" data-unit="Y" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>é</label><input type="number" data-unit="é" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>U</label><input type="number" data-unit="U" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>Ī</label><input type="number" data-unit="I" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>o</label><input type="number" data-unit="o" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>L</label><input type="number" data-unit="L" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="unit-input-grid real-grid">
+                            <div class="unit-box"><label>Yr</label><input type="number" data-unit="Yr" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>wk</label><input type="number" data-unit="wk" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>d</label><input type="number" data-unit="d" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>h</label><input type="number" data-unit="h" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>m</label><input type="number" data-unit="m" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>s</label><input type="number" data-unit="s" placeholder="0">
+                            </div>
+                        </div>
+                        <div id="alarm-unit-preview" class="unit-preview" style="display:none;"></div>
+                    </div>
+                </div>
+                <div id="active-alarms-list" class="active-list">
+                    <!-- Active alarms will be injected here -->
+                </div>
+            </div>
+
+            <!-- Timer Setting -->
+            <div class="control-group"
+                style="grid-column: 1 / -1; border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 0.5rem;">
+                <label class="control-label">Timer (Countdown)</label>
+                <div class="input-group">
+                    <input type="text" id="timer-input" placeholder="e.g. 10m, 500L">
+                    <button id="btn-timer-start" class="btn-primary">▶ Start Timer</button>
+                </div>
+                <div id="timer-unit-input-group" style="margin-top: 1rem;">
+                    <!-- Unit-wise Inputs (Timer) -->
+                    <div class="unit-input-area" data-target="timer-input">
+                        <div
+                            style="font-size: 0.7rem; color: var(--text-dim); margin-bottom: 4px; font-weight: 600; letter-spacing: 0.5px;">
+                            QUICK INPUT</div>
+                        <div class="unit-input-grid richb-grid">
+                            <div class="unit-box"><label>Y</label><input type="number" data-unit="Y" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>é</label><input type="number" data-unit="é" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>U</label><input type="number" data-unit="U" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>Ī</label><input type="number" data-unit="I" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>o</label><input type="number" data-unit="o" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>L</label><input type="number" data-unit="L" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="unit-input-grid real-grid">
+                            <div class="unit-box"><label>Yr</label><input type="number" data-unit="Yr" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>wk</label><input type="number" data-unit="wk" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>d</label><input type="number" data-unit="d" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>h</label><input type="number" data-unit="h" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>m</label><input type="number" data-unit="m" placeholder="0">
+                            </div>
+                            <div class="unit-box"><label>s</label><input type="number" data-unit="s" placeholder="0">
+                            </div>
+                        </div>
+                        <div id="timer-unit-preview" class="unit-preview" style="display:none;"></div>
+                    </div>
+                </div>
+                <button id="btn-timer-reset" class="btn-secondary" style="width:100%; margin-top:0.5rem;">🔄 RESET
+                    TIMER</button>
+                <div id="active-timers-list" class="active-list">
+                    <!-- Active timers will be injected here -->
+                </div>
+            </div>
+
+            <!-- Timer Presets -->
+            <div class="control-group" style="grid-column: 1 / -1; margin-top: 0.5rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                    <label class="control-label" style="margin:0;">Timer Presets</label>
+                    <button id="btn-save-timer-preset" class="btn-primary" title="Save Current"
+                        style="padding:6px 12px; font-size:0.8rem; width:auto;">💾 SAVE</button>
+                </div>
+                <div id="timer-presets-list" class="preset-list">
+                    <!-- Timer presets will be injected here -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Alarm Overlay -->
+    <div id="alarm-overlay" class="alarm-overlay hidden">
+        <div class="alarm-msg">TIME IS UP</div>
+        <button id="btn-stop-alarm" class="btn-stop">STOP ALARM</button>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-content">
+            <button id="btn-close-help" class="btn-close">×</button>
+            <h3>Richb Units</h3>
+            <div class="tabs">
+                <button class="tab-btn active" data-target="help-units">Units</button>
+                <button class="tab-btn" data-target="help-calendar">Calendar</button>
+            </div>
+
+            <div id="help-units" class="tab-content active">
+                <ul class="help-list">
+                    <li><strong>1 p</strong> = 0.104 sec (1/12 L)</li>
+                    <li><strong>1 L</strong> = 1.245 sec</li>
+                    <li><strong>1 o</strong> = 62.250 sec</li>
+                    <li><strong>1 Ī</strong> = 51.875 min</li>
+                    <li><strong>1 U</strong> = 25.938 hr</li>
+                    <li><strong>1 é</strong> = 6.48 days (6 U)</li>
+                    <li><strong>1 Y</strong> = 308.008 days</li>
+                </ul>
+            </div>
+
+            <div id="help-calendar" class="tab-content">
+                <p class="desc">A rhythmic calendar system based on the 100BPM heartbeat (1.2 sec/beat, corrected to
+                    1.245s).</p>
+                <ul class="help-list">
+                    <li><strong>1 p</strong> = Sub-beat (1/12 L)</li>
+                    <li><strong>1 L</strong> = Base Beat (Heartbeat)</li>
+                    <li><strong>1 o</strong> = 50 L (A "Moment")</li>
+                    <li><strong>1 Ī</strong> = 50 o (A "Session")</li>
+                    <li><strong>1 U</strong> = 30 Ī (A "Cycle/Day")</li>
+                    <li><strong>1 é</strong> = 6 U (A "Week")</li>
+                    <li><strong>1 Y</strong> = 285 U (A "Year")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Converter Modal -->
+    <div id="converter-modal" class="modal hidden">
+        <div class="modal-content">
+            <button id="btn-close-converter" class="btn-close">×</button>
+            <h3>Unit Converter</h3>
+            <div class="converter-input-group">
+                <input type="number" id="conv-input" placeholder="Value" value="1">
+                <select id="conv-unit">
+                    <option value="L">L</option>
+                    <option value="p">p</option>
+                    <option value="o">o</option>
+                    <option value="I">Ī</option>
+                    <option value="U">U</option>
+                    <option value="é">é</option>
+                    <option value="Y">Y</option>
+                    <option value="s">sec</option>
+                    <option value="m">min</option>
+                    <option value="h">hour</option>
+                    <option value="d">day</option>
+                    <option value="wk">week</option>
+                    <option value="Yr">year (real)</option>
+                </select>
+            </div>
+            <div id="conv-results" class="converter-results">
+                <!-- Results injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Input Modal -->
+    <div id="quick-input-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 320px;">
+            <button id="btn-close-quick" class="btn-close">×</button>
+            <h3>Quick Input</h3>
+            <p style="font-size:0.9rem; color:var(--text-dim); margin-bottom:1rem;">Tap to copy symbol.</p>
+            <div class="copy-table-grid">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('Ī');alert('Copied Ī')">Ī</button>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('é');alert('Copied é')">é</button>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('o');alert('Copied o')">o</button>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('L');alert('Copied L')">L</button>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('p');alert('Copied p')">p</button>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('U');alert('Copied U')">U</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Modal -->
+    <div id="theme-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px; width: 95%;">
+            <button id="btn-close-theme" class="btn-close">×</button>
+            <h3>Select Theme</h3>
+            <div class="theme-grid">
+                <button class="theme-btn" data-theme="default" style="--t-color:#00f2ea;">Default</button>
+                <button class="theme-btn" data-theme="purple" style="--t-color:#bf00ff;">Purple</button>
+                <button class="theme-btn" data-theme="orange" style="--t-color:#ff9100;">Orange</button>
+                <button class="theme-btn" data-theme="green" style="--t-color:#00ff66;">Green</button>
+                <button class="theme-btn" data-theme="monopoly"
+                    style="--t-color:#ffffff; background:#333;">Mono</button>
+            </div>
+
+            <!-- 1. Preset List (Existing Presets) -->
+            <div
+                style="margin-top: 1rem; border-bottom: 1px dotted var(--glass-border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                    <span style="font-size:0.8rem; color:var(--text-dim);">Presets:</span>
+                    <button id="btn-save-color-preset" class="btn-primary" title="Save Current"
+                        style="padding:6px 12px; font-size:0.8rem; width:auto;">💾 SAVE</button>
+                </div>
+                <div id="color-presets-list" class="preset-list">
+                    <!-- Color presets will be injected here -->
+                </div>
+            </div>
+
+            <!-- 2. Custom RGB section -->
+            <div style="margin-top: 0.5rem;" id="custom-theme-controls">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--text-dim); font-size: 0.9rem;">Custom RGB (0-8)</h4>
+
+                <!-- 1. Button Color -->
+                <div class="slider-group">
+                    <span class="slider-label">Button:</span>
+                    <div class="rgb-sliders">
+                        <input type="range" id="theme-btn-r" min="0" max="8" step="1" class="rgb-slider slider-r">
+                        <input type="range" id="theme-btn-g" min="0" max="8" step="1" class="rgb-slider slider-g">
+                        <input type="range" id="theme-btn-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                    </div>
+                </div>
+
+                <!-- 2. Background Color -->
+                <div class="slider-group">
+                    <span class="slider-label">Background:</span>
+                    <div class="rgb-sliders">
+                        <input type="range" id="theme-bg-r" min="0" max="8" step="1" class="rgb-slider slider-r">
+                        <input type="range" id="theme-bg-g" min="0" max="8" step="1" class="rgb-slider slider-g">
+                        <input type="range" id="theme-bg-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                    </div>
+                </div>
+
+                <!-- 3. Main Color -->
+                <div class="slider-group">
+                    <span class="slider-label">Main (Acnt):</span>
+                    <div class="rgb-sliders">
+                        <input type="range" id="theme-main-r" min="0" max="8" step="1" class="rgb-slider slider-r">
+                        <input type="range" id="theme-main-g" min="0" max="8" step="1" class="rgb-slider slider-g">
+                        <input type="range" id="theme-main-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                    </div>
+                </div>
+
+                <!-- 4. Text Color -->
+                <div class="slider-group">
+                    <span class="slider-label">Text Color:</span>
+                    <div class="rgb-sliders">
+                        <input type="range" id="theme-text-r" min="0" max="8" step="1" class="rgb-slider slider-r">
+                        <input type="range" id="theme-text-g" min="0" max="8" step="1" class="rgb-slider slider-g">
+                        <input type="range" id="theme-text-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                    </div>
+                </div>
+
+                <!-- 5. Dim/Label Color -->
+                <div class="slider-group">
+                    <span class="slider-label">Dim/Label:</span>
+                    <div class="rgb-sliders">
+                        <input type="range" id="theme-dim-r" min="0" max="8" step="1" class="rgb-slider slider-r">
+                        <input type="range" id="theme-dim-g" min="0" max="8" step="1" class="rgb-slider slider-g">
+                        <input type="range" id="theme-dim-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                    </div>
+                </div>
+
+                <!-- 6. Button Text Color -->
+                <div class="slider-group">
+                    <span class="slider-label">Btn Text:</span>
+                    <div class="rgb-sliders">
+                        <input type="range" id="theme-btntxt-r" min="0" max="8" step="1" class="rgb-slider slider-r">
+                        <input type="range" id="theme-btntxt-g" min="0" max="8" step="1" class="rgb-slider slider-g">
+                        <input type="range" id="theme-btntxt-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                    </div>
+                </div>
+
+                <button id="btn-apply-custom" class="btn-primary"
+                    style="padding: 0.8rem; font-size: 0.9rem; margin-top:0.5rem;">✅ APPLY CUSTOM</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .rgb-input {
+            width: 3rem !important;
+            padding: 0.5rem !important;
+            text-align: center;
+        }
+    </style>
+
+    <!-- Backup Modal -->
+    <div id="backup-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 360px;">
+            <button id="btn-close-backup" class="btn-close">×</button>
+            <h3>💾 Backup & Restore</h3>
+            <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1rem;">
+                Export your settings to a text string, or paste one here and click restore to apply.
+            </p>
+            <textarea id="backup-data" spellcheck="false" placeholder="Paste settings JSON here..."
+                style="width: 100%; height: 120px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main); font-family: var(--font-mono); font-size: 0.75rem; padding: 10px; margin-bottom: 1rem; resize: none;"></textarea>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button id="btn-export-settings" class="btn-primary" style="padding: 12px;">📤 EXPORT</button>
+                <button id="btn-import-settings" class="btn-primary"
+                    style="background: #ff4d4d; color: white; padding: 12px;">📥 RESTORE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
