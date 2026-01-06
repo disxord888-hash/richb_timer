@@ -1500,9 +1500,17 @@ const App = {
         try {
             if (storedActiveTimers) {
                 this.activeTimers = JSON.parse(storedActiveTimers) || [];
-                this.renderActiveTimers();
+                // Try rendering separately to avoid wiping data on render error
+                try {
+                    this.renderActiveTimers();
+                } catch (renderErr) {
+                    console.error("Failed to render timers on load:", renderErr);
+                }
             }
-        } catch (e) { this.activeTimers = []; }
+        } catch (e) {
+            console.error("Failed to load active timers:", e);
+            this.activeTimers = [];
+        }
 
         // Restore Inputs
         this.el.alarmInput.value = localStorage.getItem('richb_lastAlarmInput') || '';
