@@ -138,6 +138,11 @@ body::before {
     flex-direction: column;
     gap: 1rem;
     margin-bottom: 0.5rem;
+    background: var(--panel-bg);
+    padding: 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .header-top {
@@ -223,7 +228,12 @@ body::before {
 /* Footer */
 .app-footer {
     text-align: center;
-    padding: 1rem 0 2rem 0;
+    padding: 1rem;
+    margin-top: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid var(--glass-border);
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
     color: var(--text-dim);
     font-size: 36px;
     font-family: 'Tektur', var(--font-mono);
