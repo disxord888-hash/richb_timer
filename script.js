@@ -32,6 +32,7 @@ const DEFAULT_COLOR_PRESETS = [
     { name: 'Earth', rgb: { btn: { r: 3, g: 2, b: 1 }, bg: { r: 1, g: 1, b: 0 }, main: { r: 4, g: 3, b: 2 }, text: { r: 8, g: 7, b: 6 }, dim: { r: 4, g: 3, b: 1 }, btntxt: { r: 8, g: 8, b: 8 } } },
     { name: 'Dusk', rgb: { btn: { r: 2, g: 1, b: 3 }, bg: { r: 0, g: 0, b: 1 }, main: { r: 3, g: 2, b: 5 }, text: { r: 7, g: 6, b: 8 }, dim: { r: 4, g: 3, b: 5 }, btntxt: { r: 8, g: 8, b: 8 } } },
     { name: 'Neon', rgb: { btn: { r: 0, g: 8, b: 2 }, bg: { r: 0, g: 0, b: 0 }, main: { r: 0, g: 8, b: 4 }, text: { r: 8, g: 8, b: 8 }, dim: { r: 0, g: 5, b: 2 }, btntxt: { r: 0, g: 0, b: 0 } } },
+    { name: 'Neon Red', rgb: { btn: { r: 8, g: 0, b: 0 }, bg: { r: 0, g: 0, b: 0 }, main: { r: 8, g: 0, b: 2 }, text: { r: 8, g: 0, b: 0 }, dim: { r: 5, g: 0, b: 0 }, btntxt: { r: 0, g: 0, b: 0 } } },
     { name: 'Berry', rgb: { btn: { r: 6, g: 1, b: 3 }, bg: { r: 1, g: 0, b: 1 }, main: { r: 8, g: 2, b: 4 }, text: { r: 8, g: 8, b: 8 }, dim: { r: 5, g: 2, b: 3 }, btntxt: { r: 8, g: 8, b: 8 } } },
     { name: 'Sand', rgb: { btn: { r: 6, g: 5, b: 3 }, bg: { r: 8, g: 8, b: 7 }, main: { r: 7, g: 6, b: 4 }, text: { r: 1, g: 1, b: 0 }, dim: { r: 3, g: 3, b: 2 }, btntxt: { r: 1, g: 1, b: 1 } } },
     { name: 'Coal', rgb: { btn: { r: 1, g: 1, b: 1 }, bg: { r: 0, g: 0, b: 0 }, main: { r: 2, g: 2, b: 2 }, text: { r: 8, g: 8, b: 8 }, dim: { r: 4, g: 4, b: 4 }, btntxt: { r: 8, g: 8, b: 8 } } },
@@ -46,6 +47,7 @@ const TRANSLATIONS = {
         quick_input: "クイック入力",
         converter: "変換",
         theme: "テーマ",
+        settings: "設定",
         backup: "バックアップ/復元",
         help: "ヘルプ",
         btn_support: "サポート",
@@ -104,6 +106,14 @@ const TRANSLATIONS = {
         label_dim_color: "暗いテキスト/ラベル:",
         label_btntxt_color: "ボタン内文字:",
         btn_apply_custom: "✅ カスタム設定を適用",
+        settings_title: "⚙️ 設定",
+        tab_color: "カラー",
+        rgb255_title: "RGB (0-255) 数値指定",
+        rgb255_desc: "各色のRGB値 (0-255) を入力してください。",
+        btn_apply_rgb255: "✅ RGBカラーを適用",
+        tab_font: "フォント",
+        font_title: "フォント選択",
+        font_desc: "アプリ全体のフォントを選択してください（バージョン表示を除く）。",
         backup_title: "💾 バックアップと復元",
         backup_desc: "設定をテキスト形式で書き出したり、貼り付けて復元したりできます。",
         backup_placeholder: "ここに設定のJSONを貼り付けてください...",
@@ -149,6 +159,7 @@ const TRANSLATIONS = {
         preset_earth: "アース",
         preset_dusk: "ダスク",
         preset_neon: "ネオン",
+        preset_neon_red: "ネオンレッド",
         preset_berry: "ベリー",
         preset_sand: "サンド",
         preset_coal: "コール",
@@ -161,6 +172,7 @@ const TRANSLATIONS = {
         quick_input: "Quick Input",
         converter: "Converter",
         theme: "Theme",
+        settings: "Settings",
         backup: "Backup/Restore",
         help: "Help",
         btn_support: "Support",
@@ -219,6 +231,14 @@ const TRANSLATIONS = {
         label_dim_color: "Dim/Label:",
         label_btntxt_color: "Btn Text:",
         btn_apply_custom: "✅ APPLY CUSTOM",
+        settings_title: "⚙️ Settings",
+        tab_color: "Color",
+        rgb255_title: "RGB (0-255) Color Input",
+        rgb255_desc: "Enter RGB values (0-255) for each color.",
+        btn_apply_rgb255: "✅ Apply RGB Colors",
+        tab_font: "Font",
+        font_title: "Select Font",
+        font_desc: "Choose a font for the application (Except version info).",
         backup_title: "💾 Backup & Restore",
         backup_desc: "Export your settings to a text string, or paste one here and click restore to apply.",
         backup_placeholder: "Paste settings JSON here...",
@@ -264,6 +284,7 @@ const TRANSLATIONS = {
         preset_earth: "Earth",
         preset_dusk: "Dusk",
         preset_neon: "Neon",
+        preset_neon_red: "Neon Red",
         preset_berry: "Berry",
         preset_sand: "Sand",
         preset_coal: "Coal",
@@ -288,6 +309,9 @@ class RichbTime {
         // Calculate L (base unit)
         // 1L = 1.245s
         let totalL = this.totalSeconds / 1.245;
+
+        // Calculate total U (for display in parentheses)
+        const totalU = Math.floor(totalL / 75000);
 
         // Y calculation (1Y = 285U = 285 * 75000 L)
         const y = Math.floor(totalL / (285 * 75000));
@@ -319,22 +343,32 @@ class RichbTime {
         // p = fracL * 12
         const p = Math.floor(fracL * 12);
 
-        // Display
-        let parts = [];
-        if (y > 0) parts.push(`<span class="val">${y}</span><span class="unit-label">Y</span>`);
-        if (e_unit > 0 || y > 0) parts.push(`<span class="val">${e_unit}</span><span class="unit-label">é</span>`);
-        if (u > 0 || e_unit > 0 || y > 0) parts.push(`<span class="val">${u}</span><span class="unit-label">U</span>`);
-        if (i > 0 || u > 0 || e_unit > 0 || y > 0) parts.push(`<span class="val">${i}</span><span class="unit-label">Ī</span>`);
-        if (o > 0 || i > 0 || u > 0 || e_unit > 0 || y > 0) parts.push(`<span class="val">${o}</span><span class="unit-label">o</span>`);
-        if (l > 0 || p > 0 || parts.length === 0) {
+        // Display - First line: Y, é, U (totalU)
+        let firstLine = [];
+        if (y > 0) firstLine.push(`<span class="val">${y}</span><span class="unit-label">Y</span>`);
+        if (e_unit > 0 || y > 0) firstLine.push(`<span class="val">${e_unit}</span><span class="unit-label">é</span>`);
+        if (u > 0 || e_unit > 0 || y > 0) {
+            firstLine.push(`<span class="val">${u}</span><span class="unit-label">U</span>`);
+            firstLine.push(`<span class="total-u">(${totalU}U)</span>`);
+        }
+
+        // Second line: Ī, o, L, p
+        let secondLine = [];
+        if (i > 0 || u > 0 || e_unit > 0 || y > 0) secondLine.push(`<span class="val">${i}</span><span class="unit-label">Ī</span>`);
+        if (o > 0 || i > 0 || u > 0 || e_unit > 0 || y > 0) secondLine.push(`<span class="val">${o}</span><span class="unit-label">o</span>`);
+        if (l > 0 || p > 0 || (firstLine.length === 0 && secondLine.length === 0)) {
             // Always show L if others are empty, or if L>0
-            parts.push(`<span class="val">${l}</span><span class="unit-label">L</span>`);
+            secondLine.push(`<span class="val">${l}</span><span class="unit-label">L</span>`);
         }
 
         // Show p if > 0
-        if (p > 0) parts.push(`<span class="val">${p}</span><span class="unit-label">p</span>`);
+        if (p > 0) secondLine.push(`<span class="val">${p}</span><span class="unit-label">p</span>`);
 
-        return parts.join('');
+        // Combine with line break if first line has content
+        if (firstLine.length > 0) {
+            return firstLine.join('') + '<br>' + secondLine.join('');
+        }
+        return secondLine.join('');
     }
 }
 
@@ -393,6 +427,48 @@ class SoundManager {
 // App State & Logic
 // ----------------------------------------------------
 const App = {
+    rgbToHex(r, g, b) {
+        return "#" + [r, g, b].map(x => {
+            const hex = parseInt(x).toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        }).join('').toUpperCase();
+    },
+
+    hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    },
+
+    // --- Tab Switching Logic ---
+    initSettingsTabs() {
+        const tabs = document.querySelectorAll('.settings-tab');
+        const contents = document.querySelectorAll('#settings-modal .tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.target;
+
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                contents.forEach(c => {
+                    if (c.id === target) c.classList.add('active');
+                    else c.classList.remove('active');
+                });
+            });
+        });
+    },
+
+    setFont(font) {
+        this.selectedFont = font;
+        document.documentElement.style.setProperty('--font-app', font === 'inherit' ? 'var(--font-ui)' : font);
+        this.saveSettings();
+    },
+
     // State
     baseTime: Date.now(),
     lastUpdate: 0,
@@ -440,6 +516,7 @@ const App = {
 
         // Auto-refresh dynamic content on language change
         this.loadSupport();
+        if (this.el.selectFont) this.el.selectFont.value = this.selectedFont || 'inherit';
     },
 
     copySymbol(char) {
@@ -463,6 +540,19 @@ const App = {
 
         this.el.alarmInput = document.getElementById('alarm-input');
         this.el.alarmToggle = document.getElementById('btn-toggle-alarm');
+        this.el.btnSettings = document.getElementById('btn-settings');
+        this.el.modalSettings = document.getElementById('settings-modal');
+        this.el.btnCloseSettings = document.getElementById('btn-close-settings');
+        this.el.btnApplyRgb255 = document.getElementById('btn-apply-rgb255');
+        this.el.selectFont = document.getElementById('select-font');
+        this.el.hexInputs = {
+            btn: document.getElementById('hex-btn'),
+            bg: document.getElementById('hex-bg'),
+            main: document.getElementById('hex-main'),
+            text: document.getElementById('hex-text'),
+            dim: document.getElementById('hex-dim'),
+            btntxt: document.getElementById('hex-btntxt')
+        };
 
         // Timer Elements
         this.el.timerInput = document.getElementById('timer-input');
@@ -590,28 +680,54 @@ const App = {
         // Listeners: Overlay Stop
         this.el.btnStop.addEventListener('click', () => this.stopAllSound());
 
-        // Mode Switching
-        document.querySelectorAll('.btn-mode').forEach(btn => {
-            btn.addEventListener('click', (e) => this.setMode(e.currentTarget.dataset.mode));
+        // Listeners: Settings (Merged/Cleaned)
+        if (this.el.btnSettings) this.el.btnSettings.addEventListener('click', () => this.el.modalSettings.classList.remove('hidden'));
+        if (this.el.btnCloseSettings) this.el.btnCloseSettings.addEventListener('click', () => {
+            this.el.modalSettings.classList.add('hidden');
+            this.saveSettings();
+        });
+        if (this.el.btnApplyRgb255) this.el.btnApplyRgb255.addEventListener('click', () => this.applyRgb255Theme());
+        this.el.modalSettings.addEventListener('click', (e) => {
+            if (e.target === this.el.modalSettings) this.el.modalSettings.classList.add('hidden');
         });
 
-        // Start Loop
-        // Listeners: Help
-        this.el.btnHelp = document.getElementById('btn-help');
-        this.el.modalHelp = document.getElementById('help-modal');
-        this.el.btnCloseHelp = document.getElementById('btn-close-help');
+        // HEX Input event listeners
+        Object.keys(this.el.hexInputs).forEach(key => {
+            const hexEl = this.el.hexInputs[key];
+            if (hexEl) {
+                hexEl.addEventListener('change', () => {
+                    let hex = hexEl.value.trim();
+                    if (hex && !hex.startsWith('#')) hex = '#' + hex;
+                    const rgb = this.hexToRgb(hex);
+                    if (rgb) {
+                        const rIn = document.getElementById(`rgb255-${key}-r`);
+                        const gIn = document.getElementById(`rgb255-${key}-g`);
+                        const bIn = document.getElementById(`rgb255-${key}-b`);
+                        if (rIn) rIn.value = rgb.r;
+                        if (gIn) gIn.value = rgb.g;
+                        if (bIn) bIn.value = rgb.b;
+                    } else {
+                        const current = this.customRGB ? this.customRGB[key] : null;
+                        if (current) {
+                            const rVal = current.isRaw ? current.r : Math.round((current.r / 8) * 255);
+                            const gVal = current.isRaw ? current.g : Math.round((current.g / 8) * 255);
+                            const bVal = current.isRaw ? current.b : Math.round((current.b / 8) * 255);
+                            hexEl.value = this.rgbToHex(rVal, gVal, bVal);
+                        }
+                    }
+                });
+            }
+        });
 
-        if (this.el.btnHelp) {
-            this.el.btnHelp.addEventListener('click', () => {
-                this.el.modalHelp.classList.remove('hidden');
-            });
-            this.el.btnCloseHelp.addEventListener('click', () => {
-                this.el.modalHelp.classList.add('hidden');
-            });
-            this.el.modalHelp.addEventListener('click', (e) => {
-                if (e.target === this.el.modalHelp) this.el.modalHelp.classList.add('hidden');
+        // Font selection listener
+        if (this.el.selectFont) {
+            this.el.selectFont.addEventListener('change', (e) => {
+                this.setFont(e.target.value);
             });
         }
+
+        // Settings tab init
+        this.initSettingsTabs();
 
         // Listeners: Support
         if (this.el.btnSupport) {
@@ -728,6 +844,12 @@ const App = {
         }
 
         // Custom Theme Logic (Live Update)
+        const updateSliderValue = (slider) => {
+            const id = slider.id.replace('theme-', 'val-');
+            const valEl = document.getElementById(id);
+            if (valEl) valEl.textContent = slider.value;
+        };
+
         const updateCustomTheme = () => {
             const getVal = (id) => parseInt(document.getElementById(id).value) || 0;
             this.applyCustomTheme(
@@ -743,7 +865,12 @@ const App = {
         const themeControls = document.getElementById('custom-theme-controls');
         if (themeControls) {
             themeControls.querySelectorAll('input[type="range"]').forEach(slider => {
-                slider.addEventListener('input', updateCustomTheme);
+                slider.addEventListener('input', () => {
+                    updateSliderValue(slider);
+                    updateCustomTheme();
+                });
+                // Initialize display values
+                updateSliderValue(slider);
             });
         }
 
@@ -1221,7 +1348,17 @@ const App = {
             if (!colorObj) return;
             ['r', 'g', 'b'].forEach(c => {
                 const el = document.getElementById(`theme-${prefix}-${c}`);
-                if (el) el.value = colorObj[c];
+                // Update 0-8 slider (convert if raw 0-255)
+                if (el) {
+                    let val = colorObj[c];
+                    if (colorObj.isRaw) {
+                        val = Math.round((val / 255) * 8);
+                    }
+                    el.value = val;
+                    // Update the number display span
+                    const valEl = document.getElementById(`val-${prefix}-${c}`);
+                    if (valEl) valEl.textContent = val;
+                }
             });
         };
         setVal('btn', rgbSet.btn);
@@ -1230,6 +1367,51 @@ const App = {
         setVal('text', rgbSet.text);
         setVal('dim', rgbSet.dim);
         setVal('btntxt', rgbSet.btntxt);
+    },
+
+    syncRgb255Inputs(rgbSet) {
+        if (!rgbSet) return;
+        const setVal = (prefix, colorObj) => {
+            if (!colorObj) return;
+            let rVal, gVal, bVal;
+            ['r', 'g', 'b'].forEach(c => {
+                const el = document.getElementById(`rgb255-${prefix}-${c}`);
+                if (el) {
+                    let val = colorObj[c];
+                    if (!colorObj.isRaw) {
+                        val = Math.round((val / 8) * 255);
+                    }
+                    el.value = val;
+                }
+            });
+            // Also sync HEX
+            const hexEl = document.getElementById(`hex-${prefix}`);
+            if (hexEl) {
+                rVal = colorObj.isRaw ? colorObj.r : Math.round((colorObj.r / 8) * 255);
+                gVal = colorObj.isRaw ? colorObj.g : Math.round((colorObj.g / 8) * 255);
+                bVal = colorObj.isRaw ? colorObj.b : Math.round((colorObj.b / 8) * 255);
+                hexEl.value = this.rgbToHex(rVal, gVal, bVal);
+            }
+        };
+        setVal('btn', rgbSet.btn);
+        setVal('bg', rgbSet.bg);
+        setVal('main', rgbSet.main);
+        setVal('text', rgbSet.text);
+        setVal('dim', rgbSet.dim);
+        setVal('btntxt', rgbSet.btntxt);
+    },
+
+    applyRgb255Theme() {
+        const getVal = (id) => Math.min(255, Math.max(0, parseInt(document.getElementById(id).value) || 0));
+
+        const c = (prefix) => ({
+            r: getVal(`rgb255-${prefix}-r`),
+            g: getVal(`rgb255-${prefix}-g`),
+            b: getVal(`rgb255-${prefix}-b`)
+        });
+
+        this.applyCustomTheme(c('btn'), c('bg'), c('main'), c('text'), c('dim'), c('btntxt'), true);
+        alert("RGB Colors Applied! 🎨");
     },
 
     // --- Color Presets ---
@@ -1262,8 +1444,8 @@ const App = {
 
             // Generate swatch for visual reference
             const main = preset.rgb.main;
-            const map = (v) => Math.round((v / 8) * 255);
-            const color = `rgb(${map(main.r)}, ${map(main.g)}, ${map(main.b)})`;
+            const map = (v, raw) => raw ? v : Math.round((v / 8) * 255);
+            const color = `rgb(${map(main.r, main.isRaw)}, ${map(main.g, main.isRaw)}, ${map(main.b, main.isRaw)})`;
 
             item.innerHTML = `
                 <div class="color-preset-swatch" style="background:${color}"></div>
@@ -1396,26 +1578,46 @@ const App = {
         }
     },
 
-    applyCustomTheme(btnRGB, bgRGB, mainRGB, textRGB, dimRGB, btnTxtRGB) {
+    applyCustomTheme(btnRGB, bgRGB, mainRGB, textRGB, dimRGB, btnTxtRGB, isRaw = false) {
         // Validation: Ensure valid objects or default to 0
-        const validate = (obj) => ({
-            r: Math.min(8, Math.max(0, parseInt(obj?.r) || 0)),
-            g: Math.min(8, Math.max(0, parseInt(obj?.g) || 0)),
-            b: Math.min(8, Math.max(0, parseInt(obj?.b) || 0))
-        });
+        const validate = (obj) => {
+            const r = parseInt(obj?.r) || 0;
+            const g = parseInt(obj?.g) || 0;
+            const b = parseInt(obj?.b) || 0;
+            if (isRaw || (obj && obj.isRaw)) {
+                return {
+                    r: Math.min(255, Math.max(0, r)),
+                    g: Math.min(255, Math.max(0, g)),
+                    b: Math.min(255, Math.max(0, b)),
+                    isRaw: true
+                };
+            } else {
+                return {
+                    r: Math.min(8, Math.max(0, r)),
+                    g: Math.min(8, Math.max(0, g)),
+                    b: Math.min(8, Math.max(0, b)),
+                    isRaw: false
+                };
+            }
+        };
 
         const btn = validate(btnRGB);
         const bg = validate(bgRGB);
         const main = validate(mainRGB);
         const text = textRGB ? validate(textRGB) : validate(mainRGB);
-        const dim = dimRGB ? validate(dimRGB) : { r: Math.floor(text.r * 0.6), g: Math.floor(text.g * 0.6), b: Math.floor(text.b * 0.6) };
+        const dim = dimRGB ? validate(dimRGB) : {
+            r: Math.floor(text.r * 0.6),
+            g: Math.floor(text.g * 0.6),
+            b: Math.floor(text.b * 0.6),
+            isRaw: text.isRaw
+        };
         // Default button text to dark if not provided, or contrasting
-        const btntxt = btnTxtRGB ? validate(btnTxtRGB) : { r: 1, g: 1, b: 2 };
+        const btntxt = btnTxtRGB ? validate(btnTxtRGB) : { r: 1, g: 1, b: 2, isRaw: false }; // Default fallback uses 0-8 logic if simple fallback, but let's just stick to explicit inputs usually.
 
-        // Helper: 0-8 to 0-255
-        const map = (v) => Math.round((v / 8) * 255);
-        const toCol = (obj) => `rgb(${map(obj.r)}, ${map(obj.g)}, ${map(obj.b)})`;
-        const toAlpha = (obj, a) => `rgba(${map(obj.r)}, ${map(obj.g)}, ${map(obj.b)}, ${a})`;
+        // Helper: 0-8 or raw 0-255
+        const map = (val, raw) => raw ? val : Math.round((val / 8) * 255);
+        const toCol = (obj) => `rgb(${map(obj.r, obj.isRaw)}, ${map(obj.g, obj.isRaw)}, ${map(obj.b, obj.isRaw)})`;
+        const toAlpha = (obj, a) => `rgba(${map(obj.r, obj.isRaw)}, ${map(obj.g, obj.isRaw)}, ${map(obj.b, obj.isRaw)}, ${a})`;
 
         // Set CSS Variables
         const docStyle = document.documentElement.style;
@@ -1432,8 +1634,9 @@ const App = {
         this.customRGB = { btn, bg, main, text, dim, btntxt };
         this.setTheme('custom');
 
-        // Sync Sliders
+        // Sync Both
         this.syncSliders(this.customRGB);
+        this.syncRgb255Inputs(this.customRGB);
     },
 
 
@@ -1542,6 +1745,13 @@ const App = {
         this.el.timerInput.value = localStorage.getItem('richb_lastTimerInput') || '';
 
         this.updateBaseTimeInput();
+
+        // 6. Font Settings
+        const storedFont = localStorage.getItem('richb_font');
+        if (storedFont) {
+            this.setFont(storedFont);
+            if (this.el.selectFont) this.el.selectFont.value = storedFont;
+        }
     },
 
     saveSettings() {
@@ -1561,6 +1771,7 @@ const App = {
         localStorage.setItem('richb_lastAlarmInput', this.el.alarmInput.value);
         localStorage.setItem('richb_lastTimerInput', this.el.timerInput.value);
         localStorage.setItem('richb_lang', this.language);
+        localStorage.setItem('richb_font', this.selectedFont || 'inherit');
     },
 
     exportSettings() {
@@ -1626,122 +1837,130 @@ const App = {
     },
 
     updateLoop() {
-        const now = Date.now();
-        if (now - this.lastUpdate < 16) return; // Cap at ~60fps
-        this.lastUpdate = now;
-
-        // 1. Process Main Clock
-        const diffMs = now - this.baseTime;
-        const diffSec = diffMs / 1000;
-        const rt = new RichbTime(diffSec);
-        this.el.clockMain.innerHTML = rt.toRichbString();
-
-        // --- REAL TIME CLOCK UPDATE ---
-        // Format: YYYY Yr MM month DD day HH:mm:ss.s
-        const d = new Date();
-        const yyyy = d.getFullYear();
-        const mm = (d.getMonth() + 1).toString().padStart(2, '0');
-        const dd = d.getDate().toString().padStart(2, '0');
-        const hh = d.getHours().toString().padStart(2, '0');
-        const min = d.getMinutes().toString().padStart(2, '0');
-        const ss = d.getSeconds().toString().padStart(2, '0');
-        const msec = Math.floor(d.getMilliseconds() / 100); // Tenths
-
-        this.el.clockReal.textContent = `${yyyy} ${this.t('unit_yr')} ${mm} ${this.t('unit_mo')} ${dd} ${this.t('unit_dy')} ${hh}:${min}:${ss}.${msec}`;
-
-        // --- ELAPSED REAL TIME ---
-        // YYYY Year MM month DD day HH:mm:ss.s
-        // We calculate delta since baseTime
-        let deltaSec = diffSec;
-        const years = Math.floor(deltaSec / 31536000);
-        deltaSec %= 31536000;
-        const months = Math.floor(deltaSec / 2592000); // Rough 30-day month
-        deltaSec %= 2592000;
-        const days = Math.floor(deltaSec / 86400);
-        deltaSec %= 86400;
-        const hours = Math.floor(deltaSec / 3600);
-        deltaSec %= 3600;
-        const mins = Math.floor(deltaSec / 60);
-        deltaSec %= 60;
-        const secs = Math.floor(deltaSec);
-        const tenths = Math.floor((diffMs % 1000) / 100);
-
-        const pad = (v) => v.toString().padStart(2, '0');
-
-        this.el.clockElapsedReal.textContent = `${this.t('elapsed_label')} ${years} ${this.t('unit_yr')} ${pad(months)} ${this.t('unit_mo')} ${pad(days)} ${this.t('unit_dy')} ${pad(hours)}:${pad(mins)}:${pad(secs)}.${tenths}`;
-
-        // 2. Process Alarms
-        this.activeAlarms.forEach(alarm => {
-            if (!alarm.triggered && diffSec >= alarm.targetSec) {
-                alarm.triggered = true;
-                this.fireAlarm();
-                this.renderActiveAlarms(); // Update UI to show firing state
-                this.saveSettings(); // Save triggered state
+        try {
+            const now = Date.now();
+            if (now - this.lastUpdate < 16) {
+                // Cap at ~60fps, but still schedule next frame
+                requestAnimationFrame(() => this.updateLoop());
+                return;
             }
-        });
+            this.lastUpdate = now;
 
-        // 3. Process Timers
-        let primaryTimer = null; // To show on the main display
-        this.activeTimers.forEach(timer => {
-            if (timer.running) {
-                const outputMs = timer.endTime - now;
-                if (outputMs <= 0) {
-                    if (!timer.triggered) {
-                        timer.triggered = true;
-                        timer.running = false;
-                        this.fireAlarm();
-                        this.renderActiveTimers();
-                        this.saveSettings();
+            // 1. Process Main Clock
+            const diffMs = now - this.baseTime;
+            const diffSec = diffMs / 1000;
+            const rt = new RichbTime(diffSec);
+            this.el.clockMain.innerHTML = rt.toRichbString();
+
+            // --- REAL TIME CLOCK UPDATE ---
+            // Format: YYYY Yr MM month DD day HH:mm:ss.s
+            const d = new Date();
+            const yyyy = d.getFullYear();
+            const mm = (d.getMonth() + 1).toString().padStart(2, '0');
+            const dd = d.getDate().toString().padStart(2, '0');
+            const hh = d.getHours().toString().padStart(2, '0');
+            const min = d.getMinutes().toString().padStart(2, '0');
+            const ss = d.getSeconds().toString().padStart(2, '0');
+            const msec = Math.floor(d.getMilliseconds() / 100); // Tenths
+
+            this.el.clockReal.textContent = `${yyyy} ${this.t('unit_yr')} ${mm} ${this.t('unit_mo')} ${dd} ${this.t('unit_dy')} ${hh}:${min}:${ss}.${msec}`;
+
+            // --- ELAPSED REAL TIME ---
+            // YYYY Year MM month DD day HH:mm:ss.s
+            // We calculate delta since baseTime
+            let deltaSec = diffSec;
+            const years = Math.floor(deltaSec / 31536000);
+            deltaSec %= 31536000;
+            const months = Math.floor(deltaSec / 2592000); // Rough 30-day month
+            deltaSec %= 2592000;
+            const days = Math.floor(deltaSec / 86400);
+            deltaSec %= 86400;
+            const hours = Math.floor(deltaSec / 3600);
+            deltaSec %= 3600;
+            const mins = Math.floor(deltaSec / 60);
+            deltaSec %= 60;
+            const secs = Math.floor(deltaSec);
+            const tenths = Math.floor((diffMs % 1000) / 100);
+
+            const pad = (v) => v.toString().padStart(2, '0');
+
+            this.el.clockElapsedReal.textContent = `${this.t('elapsed_label')} ${years} ${this.t('unit_yr')} ${pad(months)} ${this.t('unit_mo')} ${pad(days)} ${this.t('unit_dy')} ${pad(hours)}:${pad(mins)}:${pad(secs)}.${tenths}`;
+
+            // 2. Process Alarms
+            this.activeAlarms.forEach(alarm => {
+                if (!alarm.triggered && diffSec >= alarm.targetSec) {
+                    alarm.triggered = true;
+                    this.fireAlarm();
+                    this.renderActiveAlarms(); // Update UI to show firing state
+                    this.saveSettings(); // Save triggered state
+                }
+            });
+
+            // 3. Process Timers
+            let primaryTimer = null; // To show on the main display
+            this.activeTimers.forEach(timer => {
+                if (timer.running) {
+                    const outputMs = timer.endTime - now;
+                    if (outputMs <= 0) {
+                        if (!timer.triggered) {
+                            timer.triggered = true;
+                            timer.running = false;
+                            this.fireAlarm();
+                            this.renderActiveTimers();
+                            this.saveSettings();
+                        }
+                    } else {
+                        const remainingSec = outputMs / 1000;
+                        const tView = new RichbTime(remainingSec);
+                        const rtView = this.formatRealTime(remainingSec);
+
+                        // Update display in list if exists
+                        const valEl = document.getElementById(`timer-val-${timer.id}`);
+                        if (valEl) {
+                            valEl.innerHTML = `${tView.toRichbString()} (${rtView})`;
+                        }
+
+                        // Set as primary if needed (soonest one)
+                        if (!primaryTimer || timer.endTime < primaryTimer.endTime) {
+                            primaryTimer = timer;
+                        }
                     }
-                } else {
-                    const remainingSec = outputMs / 1000;
+                } else if (timer.remainingOnPause) {
+                    const remainingSec = timer.remainingOnPause / 1000;
                     const tView = new RichbTime(remainingSec);
                     const rtView = this.formatRealTime(remainingSec);
-
-                    // Update display in list if exists
                     const valEl = document.getElementById(`timer-val-${timer.id}`);
-                    if (valEl) {
-                        valEl.innerHTML = `${tView.toRichbString()} (${rtView})`;
-                    }
-
-                    // Set as primary if needed (soonest one)
-                    if (!primaryTimer || timer.endTime < primaryTimer.endTime) {
-                        primaryTimer = timer;
-                    }
+                    if (valEl) valEl.innerHTML = `PAUSED - ${tView.toRichbString()}`;
+                } else if (timer.triggered) {
+                    const valEl = document.getElementById(`timer-val-${timer.id}`);
+                    if (valEl) valEl.innerHTML = `<span style="color:var(--accent-red)">UP!</span>`;
                 }
-            } else if (timer.remainingOnPause) {
-                const remainingSec = timer.remainingOnPause / 1000;
-                const tView = new RichbTime(remainingSec);
-                const rtView = this.formatRealTime(remainingSec);
-                const valEl = document.getElementById(`timer-val-${timer.id}`);
-                if (valEl) valEl.innerHTML = `PAUSED - ${tView.toRichbString()}`;
-            } else if (timer.triggered) {
-                const valEl = document.getElementById(`timer-val-${timer.id}`);
-                if (valEl) valEl.innerHTML = `<span style="color:var(--accent-red)">UP!</span>`;
-            }
-        });
-
-        // Show ALL active timers in the top display
-        if (this.activeTimers.length > 0) {
-            this.el.timerDisplay.classList.remove('hidden');
-            let timerHTML = '';
-            this.activeTimers.forEach(timer => {
-                const remainingSec = timer.running ? (timer.endTime - now) / 1000 : timer.remainingOnPause / 1000;
-                const tView = new RichbTime(remainingSec);
-                const rtView = this.formatRealTime(remainingSec);
-                const status = timer.running ? '' : ' <span style="font-size:0.8rem;">(PAUSED)</span>';
-                timerHTML += `
-                    <div class="timer-item-top" style="margin-bottom:0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom:0.5rem;">
-                        <div style="font-size:0.9rem; color:var(--text-dim);">${timer.label} ${status}</div>
-                        <div style="font-size:1.8rem; font-weight:700;">${tView.toRichbString()}</div>
-                        <div style="font-size:0.9rem; opacity:0.7;">(${rtView})</div>
-                    </div>
-                `;
             });
-            this.el.timerDisplay.innerHTML = timerHTML;
-        } else {
-            this.el.timerDisplay.classList.add('hidden');
-            this.el.timerDisplay.textContent = '0.0L';
+
+            // Show ALL active timers in the top display
+            if (this.activeTimers.length > 0) {
+                this.el.timerDisplay.classList.remove('hidden');
+                let timerHTML = '';
+                this.activeTimers.forEach(timer => {
+                    const remainingSec = timer.running ? (timer.endTime - now) / 1000 : (timer.remainingOnPause || 0) / 1000;
+                    const tView = new RichbTime(remainingSec);
+                    const rtView = this.formatRealTime(remainingSec);
+                    const status = timer.running ? '' : ' <span style="font-size:0.8rem;">(PAUSED)</span>';
+                    timerHTML += `
+                        <div class="timer-item-top" style="margin-bottom:0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom:0.5rem;">
+                            <div style="font-size:0.9rem; color:var(--text-dim);">${timer.label} ${status}</div>
+                            <div style="font-size:1.8rem; font-weight:700;">${tView.toRichbString()}</div>
+                            <div style="font-size:0.9rem; opacity:0.7;">(${rtView})</div>
+                        </div>
+                    `;
+                });
+                this.el.timerDisplay.innerHTML = timerHTML;
+            } else {
+                this.el.timerDisplay.classList.add('hidden');
+                this.el.timerDisplay.textContent = '0.0L';
+            }
+        } catch (e) {
+            console.error('updateLoop error:', e);
         }
 
         requestAnimationFrame(() => this.updateLoop());
@@ -1864,26 +2083,52 @@ const App = {
     },
 
     async loadVersion() {
+        console.log('loadVersion called');
         try {
             const response = await fetch('version.txt?t=' + Date.now(), { cache: 'no-store' });
+            console.log('version.txt fetch status:', response.status);
             if (response.ok) {
                 const text = await response.text();
+                console.log('version.txt text length:', text.length);
                 const lines = text.split(/\r?\n/);
+                console.log('version.txt lines:', lines.slice(0, 5));
 
                 // Footer: Only show lines 2 and 3 (version and date)
                 const verEl = document.getElementById('app-version');
-                if (verEl && lines.length >= 3) {
-                    verEl.textContent = `${lines[1]} ${lines[2]}`;
-                } else if (verEl && lines.length >= 2) {
-                    verEl.textContent = lines[1];
+                if (verEl) {
+                    if (lines.length >= 3) {
+                        verEl.textContent = `Version: ${lines[1]} ${lines[2]}`;
+                    } else if (lines.length >= 2) {
+                        verEl.textContent = `Version: ${lines[1]}`;
+                    } else {
+                        verEl.textContent = 'Version: v0.11.1α';
+                    }
+                    console.log('Footer version set to:', verEl.textContent);
                 }
 
                 // Store full content for changelog modal
                 if (this.el.versionFullContent) {
-                    this.el.versionFullContent.textContent = text;
+                    console.log('Setting versionFullContent (element exists)');
+                    this.el.versionFullContent.innerHTML = this.linkify ? this.linkify(text) : text.replace(/\n/g, '<br>');
+                } else {
+                    console.error('versionFullContent element NOT found in this.el');
+                    // Try to get it directly just in case
+                    const directEl = document.getElementById('version-full-content');
+                    if (directEl) {
+                        directEl.innerHTML = this.linkify ? this.linkify(text) : text.replace(/\n/g, '<br>');
+                        this.el.versionFullContent = directEl;
+                    }
                 }
+            } else {
+                console.error('Fetch failed with status:', response.status);
+                const verEl = document.getElementById('app-version');
+                if (verEl) verEl.textContent = 'Version: v0.11.1α';
             }
-        } catch (e) { console.error("Version load failed", e); }
+        } catch (e) {
+            console.error("Version load failed", e);
+            const verEl = document.getElementById('app-version');
+            if (verEl) verEl.textContent = 'Version: v0.11.1α';
+        }
     }
 
 };

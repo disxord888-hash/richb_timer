@@ -69,6 +69,7 @@
                     data-i18n-title="quick_input">⌨️</button>
                 <button id="btn-converter" class="btn-icon" title="Converter" data-i18n-title="converter">⇄</button>
                 <button id="btn-theme" class="btn-icon" title="Theme" data-i18n-title="theme">🎨</button>
+                <button id="btn-settings" class="btn-icon" title="Settings" data-i18n-title="settings">⚙️</button>
                 <button id="btn-backup" class="btn-icon" title="Backup/Restore" data-i18n-title="backup">💾</button>
             </div>
         </header>
@@ -370,18 +371,6 @@
         <div class="modal-content" style="max-width: 500px; width: 95%;">
             <button id="btn-close-theme" class="btn-close">×</button>
             <h3 data-i18n="theme_title">Select Theme</h3>
-            <div class="theme-grid">
-                <button class="theme-btn" data-theme="default" style="--t-color:#00f2ea;"
-                    data-i18n="theme_default">Default</button>
-                <button class="theme-btn" data-theme="purple" style="--t-color:#bf00ff;"
-                    data-i18n="theme_purple">Purple</button>
-                <button class="theme-btn" data-theme="orange" style="--t-color:#ff9100;"
-                    data-i18n="theme_orange">Orange</button>
-                <button class="theme-btn" data-theme="green" style="--t-color:#00ff66;"
-                    data-i18n="theme_green">Green</button>
-                <button class="theme-btn" data-theme="monopoly" style="--t-color:#ffffff; background:#333;"
-                    data-i18n="theme_mono">Mono</button>
-            </div>
 
             <!-- 1. Preset List (Existing Presets) -->
             <div
@@ -406,9 +395,12 @@
                 <div class="slider-group">
                     <span class="slider-label" data-i18n="label_btn_color">Button:</span>
                     <div class="rgb-sliders">
-                        <input type="range" id="theme-btn-r" min="0" max="8" step="1" class="rgb-slider slider-r">
-                        <input type="range" id="theme-btn-g" min="0" max="8" step="1" class="rgb-slider slider-g">
-                        <input type="range" id="theme-btn-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                        <input type="range" id="theme-btn-r" min="0" max="8" step="1" class="rgb-slider slider-r"><span
+                            class="slider-val" id="val-btn-r">0</span>
+                        <input type="range" id="theme-btn-g" min="0" max="8" step="1" class="rgb-slider slider-g"><span
+                            class="slider-val" id="val-btn-g">0</span>
+                        <input type="range" id="theme-btn-b" min="0" max="8" step="1" class="rgb-slider slider-b"><span
+                            class="slider-val" id="val-btn-b">0</span>
                     </div>
                 </div>
 
@@ -416,9 +408,12 @@
                 <div class="slider-group">
                     <span class="slider-label" data-i18n="label_bg_color">Background:</span>
                     <div class="rgb-sliders">
-                        <input type="range" id="theme-bg-r" min="0" max="8" step="1" class="rgb-slider slider-r">
-                        <input type="range" id="theme-bg-g" min="0" max="8" step="1" class="rgb-slider slider-g">
-                        <input type="range" id="theme-bg-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                        <input type="range" id="theme-bg-r" min="0" max="8" step="1" class="rgb-slider slider-r"><span
+                            class="slider-val" id="val-bg-r">0</span>
+                        <input type="range" id="theme-bg-g" min="0" max="8" step="1" class="rgb-slider slider-g"><span
+                            class="slider-val" id="val-bg-g">0</span>
+                        <input type="range" id="theme-bg-b" min="0" max="8" step="1" class="rgb-slider slider-b"><span
+                            class="slider-val" id="val-bg-b">0</span>
                     </div>
                 </div>
 
@@ -426,9 +421,12 @@
                 <div class="slider-group">
                     <span class="slider-label" data-i18n="label_main_color">Main (Acnt):</span>
                     <div class="rgb-sliders">
-                        <input type="range" id="theme-main-r" min="0" max="8" step="1" class="rgb-slider slider-r">
-                        <input type="range" id="theme-main-g" min="0" max="8" step="1" class="rgb-slider slider-g">
-                        <input type="range" id="theme-main-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                        <input type="range" id="theme-main-r" min="0" max="8" step="1" class="rgb-slider slider-r"><span
+                            class="slider-val" id="val-main-r">0</span>
+                        <input type="range" id="theme-main-g" min="0" max="8" step="1" class="rgb-slider slider-g"><span
+                            class="slider-val" id="val-main-g">0</span>
+                        <input type="range" id="theme-main-b" min="0" max="8" step="1" class="rgb-slider slider-b"><span
+                            class="slider-val" id="val-main-b">0</span>
                     </div>
                 </div>
 
@@ -436,9 +434,12 @@
                 <div class="slider-group">
                     <span class="slider-label" data-i18n="label_text_color">Text Color:</span>
                     <div class="rgb-sliders">
-                        <input type="range" id="theme-text-r" min="0" max="8" step="1" class="rgb-slider slider-r">
-                        <input type="range" id="theme-text-g" min="0" max="8" step="1" class="rgb-slider slider-g">
-                        <input type="range" id="theme-text-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                        <input type="range" id="theme-text-r" min="0" max="8" step="1" class="rgb-slider slider-r"><span
+                            class="slider-val" id="val-text-r">0</span>
+                        <input type="range" id="theme-text-g" min="0" max="8" step="1" class="rgb-slider slider-g"><span
+                            class="slider-val" id="val-text-g">0</span>
+                        <input type="range" id="theme-text-b" min="0" max="8" step="1" class="rgb-slider slider-b"><span
+                            class="slider-val" id="val-text-b">0</span>
                     </div>
                 </div>
 
@@ -446,9 +447,12 @@
                 <div class="slider-group">
                     <span class="slider-label" data-i18n="label_dim_color">Dim/Label:</span>
                     <div class="rgb-sliders">
-                        <input type="range" id="theme-dim-r" min="0" max="8" step="1" class="rgb-slider slider-r">
-                        <input type="range" id="theme-dim-g" min="0" max="8" step="1" class="rgb-slider slider-g">
-                        <input type="range" id="theme-dim-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                        <input type="range" id="theme-dim-r" min="0" max="8" step="1" class="rgb-slider slider-r"><span
+                            class="slider-val" id="val-dim-r">0</span>
+                        <input type="range" id="theme-dim-g" min="0" max="8" step="1" class="rgb-slider slider-g"><span
+                            class="slider-val" id="val-dim-g">0</span>
+                        <input type="range" id="theme-dim-b" min="0" max="8" step="1" class="rgb-slider slider-b"><span
+                            class="slider-val" id="val-dim-b">0</span>
                     </div>
                 </div>
 
@@ -456,9 +460,12 @@
                 <div class="slider-group">
                     <span class="slider-label" data-i18n="label_btntxt_color">Btn Text:</span>
                     <div class="rgb-sliders">
-                        <input type="range" id="theme-btntxt-r" min="0" max="8" step="1" class="rgb-slider slider-r">
-                        <input type="range" id="theme-btntxt-g" min="0" max="8" step="1" class="rgb-slider slider-g">
-                        <input type="range" id="theme-btntxt-b" min="0" max="8" step="1" class="rgb-slider slider-b">
+                        <input type="range" id="theme-btntxt-r" min="0" max="8" step="1"
+                            class="rgb-slider slider-r"><span class="slider-val" id="val-btntxt-r">0</span>
+                        <input type="range" id="theme-btntxt-g" min="0" max="8" step="1"
+                            class="rgb-slider slider-g"><span class="slider-val" id="val-btntxt-g">0</span>
+                        <input type="range" id="theme-btntxt-b" min="0" max="8" step="1"
+                            class="rgb-slider slider-b"><span class="slider-val" id="val-btntxt-b">0</span>
                     </div>
                 </div>
 
@@ -474,6 +481,16 @@
             width: 3rem !important;
             padding: 0.5rem !important;
             text-align: center;
+        }
+
+        .slider-val {
+            display: inline-block;
+            width: 1.2rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            margin-left: 4px;
         }
     </style>
 
@@ -508,6 +525,183 @@
             </div>
         </div>
     </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px; width: 95%;">
+            <button id="btn-close-settings" class="btn-close">×</button>
+            <h3 data-i18n="settings_title">⚙️ Settings</h3>
+
+            <div class="tabs" style="margin-bottom: 1rem;">
+                <button class="tab-btn settings-tab active" data-target="settings-color"
+                    data-i18n="tab_color">Color</button>
+                <button class="tab-btn settings-tab" data-target="settings-font" data-i18n="tab_font">Font</button>
+            </div>
+
+            <div id="settings-color" class="tab-content active">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--text-dim); font-size: 0.9rem;" data-i18n="rgb255_title">
+                    RGB (0-255) Color Input</h4>
+                <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem;" data-i18n="rgb255_desc">
+                    Enter RGB values (0-255) for each color.</p>
+
+                <!-- Button Color (0-255) -->
+                <div class="rgb255-group">
+                    <span class="slider-label" data-i18n="label_btn_color">Button:</span>
+                    <div class="rgb255-inputs">
+                        <input type="number" id="rgb255-btn-r" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="R">
+                        <input type="number" id="rgb255-btn-g" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="G">
+                        <input type="number" id="rgb255-btn-b" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="B">
+                        <input type="text" id="hex-btn" class="hex-input" placeholder="#000000">
+                    </div>
+                </div>
+
+                <!-- Background Color (0-255) -->
+                <div class="rgb255-group">
+                    <span class="slider-label" data-i18n="label_bg_color">Background:</span>
+                    <div class="rgb255-inputs">
+                        <input type="number" id="rgb255-bg-r" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="R">
+                        <input type="number" id="rgb255-bg-g" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="G">
+                        <input type="number" id="rgb255-bg-b" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="B">
+                        <input type="text" id="hex-bg" class="hex-input" placeholder="#000000">
+                    </div>
+                </div>
+
+                <!-- Main Color (0-255) -->
+                <div class="rgb255-group">
+                    <span class="slider-label" data-i18n="label_main_color">Main (Acnt):</span>
+                    <div class="rgb255-inputs">
+                        <input type="number" id="rgb255-main-r" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="R">
+                        <input type="number" id="rgb255-main-g" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="G">
+                        <input type="number" id="rgb255-main-b" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="B">
+                        <input type="text" id="hex-main" class="hex-input" placeholder="#000000">
+                    </div>
+                </div>
+
+                <!-- Text Color (0-255) -->
+                <div class="rgb255-group">
+                    <span class="slider-label" data-i18n="label_text_color">Text Color:</span>
+                    <div class="rgb255-inputs">
+                        <input type="number" id="rgb255-text-r" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="R">
+                        <input type="number" id="rgb255-text-g" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="G">
+                        <input type="number" id="rgb255-text-b" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="B">
+                        <input type="text" id="hex-text" class="hex-input" placeholder="#000000">
+                    </div>
+                </div>
+
+                <!-- Dim/Label Color (0-255) -->
+                <div class="rgb255-group">
+                    <span class="slider-label" data-i18n="label_dim_color">Dim/Label:</span>
+                    <div class="rgb255-inputs">
+                        <input type="number" id="rgb255-dim-r" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="R">
+                        <input type="number" id="rgb255-dim-g" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="G">
+                        <input type="number" id="rgb255-dim-b" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="B">
+                        <input type="text" id="hex-dim" class="hex-input" placeholder="#000000">
+                    </div>
+                </div>
+
+                <!-- Button Text Color (0-255) -->
+                <div class="rgb255-group">
+                    <span class="slider-label" data-i18n="label_btntxt_color">Btn Text:</span>
+                    <div class="rgb255-inputs">
+                        <input type="number" id="rgb255-btntxt-r" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="R">
+                        <input type="number" id="rgb255-btntxt-g" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="G">
+                        <input type="number" id="rgb255-btntxt-b" min="0" max="255" value="0" class="rgb255-input"
+                            placeholder="B">
+                        <input type="text" id="hex-btntxt" class="hex-input" placeholder="#000000">
+                    </div>
+                </div>
+
+                <button id="btn-apply-rgb255" class="btn-primary"
+                    style="width: 100%; padding: 0.8rem; font-size: 0.9rem; margin-top: 1rem;"
+                    data-i18n="btn_apply_rgb255">✅ Apply RGB Colors</button>
+            </div>
+
+            <!-- Font Tab -->
+            <div id="settings-font" class="tab-content">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--text-dim); font-size: 0.9rem;" data-i18n="font_title">
+                    Select Font</h4>
+                <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem;" data-i18n="font_desc">Choose
+                    a font for the application (Except version info).</p>
+
+                <div class="font-selector">
+                    <select id="select-font"
+                        style="width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.3); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 8px; font-family: inherit;">
+                        <option value="inherit">Default (Outfit/Inter)</option>
+                        <option value="'Tektur', system-ui, sans-serif">Tektur</option>
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                        <option value="'Noto Sans JP', sans-serif">Noto Sans JP</option>
+                        <option value="'M PLUS Rounded 1c', sans-serif">M PLUS Rounded 1c</option>
+                        <option value="'游ゴシック', 'Yu Gothic', sans-serif">Yu Gothic</option>
+                        <option value="'Meiryo', sans-serif">Meiryo</option>
+                        <option value="'Courier New', Courier, monospace">Monospace</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .rgb255-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+
+        .rgb255-inputs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .rgb255-input {
+            width: 45px;
+            padding: 6px;
+            text-align: center;
+            font-size: 0.8rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-main);
+        }
+
+        .hex-input {
+            width: 75px;
+            padding: 6px;
+            text-align: center;
+            font-size: 0.8rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        .rgb255-input:focus,
+        .hex-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+    </style>
 
     <script src="script.js"></script>
 </body>
