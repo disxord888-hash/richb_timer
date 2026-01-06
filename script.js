@@ -391,6 +391,7 @@ class SoundManager {
 const App = {
     // State
     baseTime: Date.now(),
+    lastUpdate: 0,
 
     // Multiple Alarms (At specific time)
     activeAlarms: [], // {id, targetSec, triggered, label}
@@ -805,7 +806,16 @@ const App = {
             });
         });
 
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW registered:', reg))
+                .catch(err => console.error('SW reg failed:', err));
+        }
+
         this.updateLoop();
+        // Backup loop for background execution (approx 1Hz)
+        setInterval(() => this.updateLoop(), 1000);
     },
 
     // Helper: linkify text (find URLs and convert to <a>)
@@ -1567,6 +1577,8 @@ const App = {
 
     updateLoop() {
         const now = Date.now();
+        if (now - this.lastUpdate < 16) return; // Cap at ~60fps
+        this.lastUpdate = now;
 
         // 1. Process Main Clock
         const diffMs = now - this.baseTime;
