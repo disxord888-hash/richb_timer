@@ -46,6 +46,7 @@
             </div>
             <div class="branding-right">
                 <button id="btn-lang" class="btn-icon" title="Switch Language" data-i18n-title="lang_toggle">🌐</button>
+                <button id="btn-support" class="btn-icon" title="Support" data-i18n-title="btn_support">🛠️</button>
                 <button id="btn-help" class="btn-icon" title="Help" data-i18n-title="help">❓</button>
             </div>
         </div>
@@ -248,7 +249,6 @@
             <div class="tabs">
                 <button class="tab-btn active" data-target="help-units" data-i18n="tab_units">Units</button>
                 <button class="tab-btn" data-target="help-calendar" data-i18n="tab_calendar">Calendar</button>
-                <button class="tab-btn" data-target="help-support" data-i18n="tab_support">Support</button>
             </div>
 
             <div id="help-units" class="tab-content active">
@@ -277,11 +277,16 @@
                     <li><strong>1 Y</strong> = <span data-i18n="help_y_desc">285 U (A "Year")</span></li>
                 </ul>
             </div>
+        </div>
+    </div>
 
-            <div id="help-support" class="tab-content">
-                <p class="desc">GitHub: <a href="https://github.com/disxord888-hash/Richb_timer/tree/main"
-                        target="_blank"
-                        rel="noopener noreferrer">https://github.com/disxord888-hash/Richb_timer/tree/main</a></p>
+    <!-- Support Modal -->
+    <div id="support-modal" class="modal hidden">
+        <div class="modal-content">
+            <button id="btn-close-support" class="btn-close">×</button>
+            <h3 data-i18n="tab_support">Support</h3>
+            <div id="help-support" class="tab-content active">
+                <div id="support-full-content" class="desc" style="white-space: pre-wrap;"></div>
             </div>
         </div>
     </div>

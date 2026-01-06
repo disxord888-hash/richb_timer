@@ -1,0 +1,6 @@
+Richb Timer Support
+
+GitHub Repository:
+https://github.com/disxord888-hash/Richb_timer/tree/main
+
+If you find any bugs or have feature requests, please report them on GitHub.

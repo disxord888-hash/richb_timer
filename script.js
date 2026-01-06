@@ -48,6 +48,7 @@ const TRANSLATIONS = {
         theme: "テーマ",
         backup: "バックアップ/復元",
         help: "ヘルプ",
+        btn_support: "サポート",
         base_point: "起点 (0.0L)",
         save_btn: "💾 保存",
         save_current: "現在の設定を保存",
@@ -160,6 +161,7 @@ const TRANSLATIONS = {
         theme: "Theme",
         backup: "Backup/Restore",
         help: "Help",
+        btn_support: "Support",
         base_point: "Base Point (0.0L)",
         save_btn: "💾 SAVE",
         save_current: "Save Current",
@@ -430,6 +432,9 @@ const App = {
             el.placeholder = this.t(key);
         });
         document.documentElement.lang = this.language;
+
+        // Auto-refresh dynamic content on language change
+        this.loadSupport();
     },
 
     copySymbol(char) {
@@ -505,6 +510,12 @@ const App = {
         this.el.btnCloseNotice = document.getElementById('btn-close-notice');
         this.el.tickerContent = document.querySelector('.ticker-content');
         this.el.noticeFullContent = document.getElementById('notice-full-content');
+
+        // Support Elements
+        this.el.btnSupport = document.getElementById('btn-support');
+        this.el.modalSupport = document.getElementById('support-modal');
+        this.el.btnCloseSupport = document.getElementById('btn-close-support');
+        this.el.supportFullContent = document.getElementById('support-full-content');
 
         // Load stored
         this.loadSettings();
@@ -591,6 +602,19 @@ const App = {
             });
         }
 
+        // Listeners: Support
+        if (this.el.btnSupport) {
+            this.el.btnSupport.addEventListener('click', () => {
+                this.el.modalSupport.classList.remove('hidden');
+            });
+            this.el.btnCloseSupport.addEventListener('click', () => {
+                this.el.modalSupport.classList.add('hidden');
+            });
+            this.el.modalSupport.addEventListener('click', (e) => {
+                if (e.target === this.el.modalSupport) this.el.modalSupport.classList.add('hidden');
+            });
+        }
+
         // Listeners: Help Tabs
         const tabBtns = document.querySelectorAll('.tab-btn');
         tabBtns.forEach(btn => {
@@ -605,6 +629,9 @@ const App = {
             });
         });
 
+        // Initialize dynamic content
+        this.loadNotice();
+        this.loadSupport(); // Added this line
         // Listeners: Converter
         this.el.btnConverter = document.getElementById('btn-converter');
         this.el.modalConverter = document.getElementById('converter-modal');
@@ -739,7 +766,7 @@ const App = {
         }
 
         // Load Notice
-        this.loadNotice();
+        // this.loadNotice(); // Moved above
 
         // Listeners: Unit-wise Inputs
         // Listeners: Unit-wise Inputs
@@ -779,6 +806,14 @@ const App = {
         });
 
         this.updateLoop();
+    },
+
+    // Helper: linkify text (find URLs and convert to <a>)
+    linkify(text) {
+        const urlPattern = /(https?:\/\/[^\s]+)/g;
+        return text.replace(urlPattern, (url) => {
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+        });
     },
 
     updateConverter() {
@@ -1726,6 +1761,43 @@ const App = {
             console.error('Failed to load notice.txt:', e);
             this.el.tickerContent.textContent = this.t('help_update_desc');
             this.el.noticeFullContent.textContent = this.t('help_update_desc');
+        }
+    },
+
+    async loadSupport() {
+        console.log('loadSupport called. Current language:', this.language);
+        try {
+            // Fetch file based on language (ja -> support.txt, others -> support_xx.txt or support_en.txt)
+            let fileName = 'support.txt';
+            if (this.language !== 'ja') {
+                fileName = `support_${this.language}.txt`;
+            }
+            console.log('Fetching support file:', fileName);
+
+            const response = await fetch(fileName + '?t=' + Date.now(), { cache: 'no-store' });
+
+            // Fallback to support.txt (JA) if localized file not found
+            let text;
+            if (!response.ok) {
+                if (fileName !== 'support.txt') {
+                    const fallbackResponse = await fetch('support.txt?t=' + Date.now(), { cache: 'no-store' });
+                    text = fallbackResponse.ok ? await fallbackResponse.text() : "Support content not found.";
+                } else {
+                    throw new Error('Support fetch failed');
+                }
+            } else {
+                text = await response.text();
+            }
+
+            // Linkify and set innerHTML
+            if (this.el.supportFullContent) {
+                this.el.supportFullContent.innerHTML = this.linkify(text);
+            }
+        } catch (e) {
+            console.error(e);
+            if (this.el.supportFullContent) {
+                this.el.supportFullContent.innerHTML = this.linkify("GitHub Repository: https://github.com/disxord888-hash/Richb_timer/tree/main");
+            }
         }
     }
 
