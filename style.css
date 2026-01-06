@@ -141,8 +141,11 @@ body::before {
     background: var(--panel-bg);
     padding: 1rem;
     border-radius: 16px;
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* Stronger border */
+    border-bottom: 2px solid var(--accent-purple);
+    /* Distinct bottom edge */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .header-top {
@@ -229,9 +232,10 @@ body::before {
 .app-footer {
     text-align: center;
     padding: 1rem;
-    margin-top: 1rem;
-    background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid var(--glass-border);
+    margin-top: 1.5rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+    border-top: 2px solid var(--accent-purple);
+    /* Distinct top edge */
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
     color: var(--text-dim);
