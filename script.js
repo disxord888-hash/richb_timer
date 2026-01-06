@@ -509,7 +509,7 @@ const App = {
         this.el.btnNotice = document.getElementById('btn-notice');
         this.el.modalNotice = document.getElementById('notice-modal');
         this.el.btnCloseNotice = document.getElementById('btn-close-notice');
-        this.el.tickerContent = document.querySelector('.ticker-content');
+        this.el.tickerContent = document.getElementById('ticker-content');
         this.el.noticeFullContent = document.getElementById('notice-full-content');
 
         // Support Elements
@@ -632,7 +632,9 @@ const App = {
 
         // Initialize dynamic content
         this.loadNotice();
-        this.loadSupport(); // Added this line
+        this.loadSupport();
+        this.loadVersion(); // Add version loading
+        this.updateUI();
         // Listeners: Converter
         this.el.btnConverter = document.getElementById('btn-converter');
         this.el.modalConverter = document.getElementById('converter-modal');
@@ -1836,6 +1838,17 @@ const App = {
                 this.el.supportFullContent.innerHTML = this.linkify("GitHub Repository: https://github.com/disxord888-hash/Richb_timer/tree/main");
             }
         }
+    },
+
+    async loadVersion() {
+        try {
+            const response = await fetch('version.txt?t=' + Date.now(), { cache: 'no-store' });
+            if (response.ok) {
+                const ver = await response.text();
+                const verEl = document.getElementById('app-version');
+                if (verEl) verEl.textContent = `Version: ${ver.trim()}`;
+            }
+        } catch (e) { console.error("Version load failed", e); }
     }
 
 };

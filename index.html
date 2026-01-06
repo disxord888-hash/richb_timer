@@ -32,36 +32,38 @@
     <div class="ambient-glow"></div>
 
     <div id="app-container">
-        <!-- Branding / Navigation At the Very Top -->
-        <div class="app-branding">
-            <div class="branding-left">
-                <button class="btn-icon btn-mode" data-mode="normal" title="Normal"
-                    data-i18n-title="mode_normal">🔳</button>
-                <button class="btn-icon btn-mode" data-mode="view-only" title="View Only"
-                    data-i18n-title="mode_view_only">👁️</button>
-            </div>
-            <div class="branding-center">
-                <img src="icon.png" class="app-icon" alt="Richb Icon">
-                <div class="app-title">Richb Timer</div>
-            </div>
-            <div class="branding-right">
-                <button id="btn-lang" class="btn-icon" title="Switch Language" data-i18n-title="lang_toggle">🌐</button>
-                <button id="btn-support" class="btn-icon" title="Support" data-i18n-title="btn_support">🛠️</button>
-                <button id="btn-help" class="btn-icon" title="Help" data-i18n-title="help">❓</button>
-            </div>
-        </div>
-
-        <div class="notice-ticker-container">
-            <div class="notice-ticker">
-                <div class="ticker-content">
-                    更新は１日に３～４回もしているので、１日に１回は、サイトのデータを消してください。
+        <!-- Unified Header -->
+        <header class="main-header">
+            <div class="header-top">
+                <div class="branding-left">
+                    <button class="btn-icon btn-mode" data-mode="normal" title="Normal"
+                        data-i18n-title="mode_normal">🔳</button>
+                    <button class="btn-icon btn-mode" data-mode="view-only" title="View Only"
+                        data-i18n-title="mode_view_only">👁️</button>
+                </div>
+                <div class="branding-center">
+                    <img src="icon.png" class="app-icon" alt="Richb Icon">
+                    <div class="app-title">Richb Timer</div>
+                </div>
+                <div class="branding-right">
+                    <button id="btn-lang" class="btn-icon" title="Switch Language"
+                        data-i18n-title="lang_toggle">🌐</button>
+                    <button id="btn-support" class="btn-icon" title="Support" data-i18n-title="btn_support">🛠️</button>
+                    <button id="btn-help" class="btn-icon" title="Help" data-i18n-title="help">❓</button>
                 </div>
             </div>
-            <button id="btn-notice" class="btn-icon" title="Announcements" data-i18n-title="btn_notice">📢</button>
-        </div>
 
-        <!-- Header / Toolbar (Middle Buttons) -->
-        <header class="app-header">
+            <!-- Ticker within Header -->
+            <div class="notice-ticker-container">
+                <div class="notice-ticker">
+                    <div class="ticker-content" id="ticker-content">
+                        Loading updates...
+                    </div>
+                </div>
+                <button id="btn-notice" class="btn-icon" title="Announcements" data-i18n-title="btn_notice">📢</button>
+            </div>
+
+            <!-- Toolbar Buttons -->
             <div class="mode-switches">
                 <button id="btn-quick-input" class="btn-icon" title="Quick Input"
                     data-i18n-title="quick_input">⌨️</button>
@@ -233,6 +235,11 @@
                 </div>
             </div>
         </section>
+        </section>
+
+        <footer class="app-footer">
+            <span id="app-version">Version: ...</span>
+        </footer>
     </div>
 
     <!-- Alarm Overlay -->
