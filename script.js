@@ -1709,8 +1709,8 @@ const App = {
             const text = await response.text();
             const allLines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
 
-            // Ticker: First 2 lines
-            const tickerLines = allLines.slice(0, 2);
+            // Ticker: First 4 lines
+            const tickerLines = allLines.slice(0, 4);
             if (tickerLines.length > 0) {
                 this.el.tickerContent.textContent = tickerLines.join(' | ');
             } else {

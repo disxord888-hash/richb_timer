@@ -125,17 +125,44 @@ body::before {
     gap: 1.5rem;
 }
 
-/* Branding At Top */
+/* Branding At Top - Now a 3-column header */
 .app-branding {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 12px;
+    justify-content: space-between;
+    gap: 8px;
     margin-bottom: 0.2rem;
+    width: 100%;
 }
 
-/* Notice Ticker */
+.branding-left,
+.branding-right {
+    display: flex;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.branding-right {
+    justify-content: flex-end;
+}
+
+.branding-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+/* Notice Ticker container to hold button */
+.notice-ticker-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
 .notice-ticker {
+    flex: 1;
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid var(--accent-cyan);
     border-left: none;
