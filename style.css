@@ -204,6 +204,13 @@ body::before {
     }
 }
 
+.app-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
 /* Mode Switches - Toolbar */
 .mode-switches {
     display: flex;
@@ -226,14 +233,14 @@ body::before {
 
 /* Icons */
 .btn-icon {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.05);
     border: none;
     color: var(--text-dim);
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 1rem;
     transition: all 0.2s;
     display: flex;
     align-items: center;
@@ -986,4 +993,5 @@ body.mode-view-only .app-header:hover {
 .copy-btn:hover {
     background: var(--accent-purple);
     color: white;
+
 }
