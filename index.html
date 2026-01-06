@@ -239,7 +239,11 @@
 
         <footer class="app-footer">
             <span id="app-version">Version: ...</span>
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 10px; display: flex; gap: 15px; justify-content: center;">
+                <button id="btn-version" class="btn-text-only" title="Changelog" data-i18n="btn_changelog"
+                    style="font-family: 'Tektur', var(--font-mono); font-size: 1rem; color: var(--accent-purple); background: none; border: none; cursor: pointer; text-decoration: underline;">
+                    📜 更新履歴
+                </button>
                 <button id="btn-support" class="btn-text-only" title="Support" data-i18n="btn_support"
                     style="font-family: 'Tektur', var(--font-mono); font-size: 1rem; color: var(--accent-purple); background: none; border: none; cursor: pointer; text-decoration: underline;">
                     Support
@@ -301,6 +305,16 @@
             <div id="help-support" class="tab-content active">
                 <div id="support-full-content" class="desc" style="white-space: pre-wrap;"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- Version/Changelog Modal -->
+    <div id="version-modal" class="modal hidden">
+        <div class="modal-content">
+            <button id="btn-close-version" class="btn-close">×</button>
+            <h3 data-i18n="tab_changelog">更新履歴</h3>
+            <div id="version-full-content" class="desc"
+                style="white-space: pre-wrap; max-height: 60vh; overflow-y: auto;"></div>
         </div>
     </div>
 

@@ -122,6 +122,8 @@ const TRANSLATIONS = {
         unit_d_real: "日",
         btn_notice: "お知らせ",
         tab_notice: "お知らせ",
+        btn_changelog: "📜 更新履歴",
+        tab_changelog: "更新履歴",
         help_update_desc: "更新は１日に３～４回もしているので、１日に１回は、サイトのデータを消してください。",
         help_desc: "100BPMの鼓動(1.2秒/拍、補正値1.245秒)に基づいたリズム感のある暦体系です。",
         help_p_desc: "サブビート (1/12 L)",
@@ -235,6 +237,8 @@ const TRANSLATIONS = {
         unit_d_real: "days",
         btn_notice: "Notice",
         tab_notice: "Notice",
+        btn_changelog: "📜 Changelog",
+        tab_changelog: "Changelog",
         help_update_desc: "The site is updated 3-4 times a day. Please clear your site data once a day to ensure you have the latest version.",
         help_desc: "A rhythmic calendar system based on the 100BPM heartbeat (1.2 sec/beat, corrected to 1.245s).",
         help_p_desc: "Sub-beat (1/12 L)",
@@ -518,6 +522,12 @@ const App = {
         this.el.btnCloseSupport = document.getElementById('btn-close-support');
         this.el.supportFullContent = document.getElementById('support-full-content');
 
+        // Version/Changelog Elements
+        this.el.btnVersion = document.getElementById('btn-version');
+        this.el.modalVersion = document.getElementById('version-modal');
+        this.el.btnCloseVersion = document.getElementById('btn-close-version');
+        this.el.versionFullContent = document.getElementById('version-full-content');
+
         // Load stored
         this.loadSettings();
 
@@ -613,6 +623,19 @@ const App = {
             });
             this.el.modalSupport.addEventListener('click', (e) => {
                 if (e.target === this.el.modalSupport) this.el.modalSupport.classList.add('hidden');
+            });
+        }
+
+        // Listeners: Version/Changelog
+        if (this.el.btnVersion) {
+            this.el.btnVersion.addEventListener('click', () => {
+                this.el.modalVersion.classList.remove('hidden');
+            });
+            this.el.btnCloseVersion.addEventListener('click', () => {
+                this.el.modalVersion.classList.add('hidden');
+            });
+            this.el.modalVersion.addEventListener('click', (e) => {
+                if (e.target === this.el.modalVersion) this.el.modalVersion.classList.add('hidden');
             });
         }
 
@@ -1844,9 +1867,21 @@ const App = {
         try {
             const response = await fetch('version.txt?t=' + Date.now(), { cache: 'no-store' });
             if (response.ok) {
-                const ver = await response.text();
+                const text = await response.text();
+                const lines = text.split(/\r?\n/);
+
+                // Footer: Only show lines 2 and 3 (version and date)
                 const verEl = document.getElementById('app-version');
-                if (verEl) verEl.textContent = `Version: ${ver.trim()}`;
+                if (verEl && lines.length >= 3) {
+                    verEl.textContent = `${lines[1]} ${lines[2]}`;
+                } else if (verEl && lines.length >= 2) {
+                    verEl.textContent = lines[1];
+                }
+
+                // Store full content for changelog modal
+                if (this.el.versionFullContent) {
+                    this.el.versionFullContent.textContent = text;
+                }
             }
         } catch (e) { console.error("Version load failed", e); }
     }
