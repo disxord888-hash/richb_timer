@@ -1,4 +1,4 @@
-const CACHE_NAME = 'richb-timer-v2';
+const CACHE_NAME = 'richb-timer-v4';
 const ASSETS = [
     './',
     './index.html',

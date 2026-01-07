@@ -15,7 +15,21 @@ const UNITS = {
     Y: { val: 285 * 75000 * 1.245, label: 'Y' } // 285 U
 };
 
-const APP_VERSION = 'v0.11.02α';
+const APP_VERSION = 'v0.11.03α (2026/01/07)';
+
+const SUPPORT_TEXT_JA = `Richb Timer サポート
+
+GitHub リポジトリ:
+https://github.com/disxord888-hash/Richb_timer/tree/main
+
+バグの報告や機能のリクエストがある場合は、GitHubのIssueで報告してください。
+
+【更新方法（YouTube）】
+https://www.youtube.com/watch?v=-W4yeXw3VL0`;
+
+const NOTICE_TEXT_JA = `[常駐]更新のため、1日に1回は、サイトのデータを消してください。
+表示切替は[🔳],[👁]ボタンでできるよ！
+更新履歴は一番下！`;
 
 const DEFAULT_COLOR_PRESETS = [
     { name: 'Navy', rgb: { btn: { r: 0, g: 0, b: 5 }, bg: { r: 0, g: 0, b: 1 }, main: { r: 0, g: 0, b: 3 }, text: { r: 0, g: 0, b: 8 }, dim: { r: 0, g: 0, b: 4 }, btntxt: { r: 8, g: 8, b: 8 } } },
@@ -2144,12 +2158,19 @@ const App = {
             const text = await response.text();
             const allLines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
 
-            // Ticker: First 4 lines
-            const tickerLines = allLines.slice(0, 4);
-            if (tickerLines.length > 0) {
-                this.el.tickerContent.textContent = tickerLines.join(' | ');
+            // Ticker: All lines joined
+            const tickerText = allLines.join(' | ');
+            if (tickerText.length > 0) {
+                this.el.tickerContent.textContent = tickerText;
+
+                // Dynamic speed: 4 characters per second
+                const duration = tickerText.length / 4;
+                // Ensure a minimum reasonable duration (e.g., 5s) to avoid crazy fast scroll on short text
+                const finalDuration = Math.max(5, duration);
+                this.el.tickerContent.style.animationDuration = finalDuration + 's';
             } else {
                 this.el.tickerContent.textContent = this.t('help_update_desc');
+                this.el.tickerContent.style.animationDuration = '15s'; // Default fallback
             }
 
             // Modal: Full content
@@ -2164,38 +2185,12 @@ const App = {
 
     async loadSupport() {
         console.log('loadSupport called. Current language:', this.language);
-        try {
-            // Fetch file based on language (ja -> support.txt, others -> support_xx.txt or support_en.txt)
-            let fileName = 'support.txt';
-            if (this.language !== 'ja') {
-                fileName = `support_${this.language}.txt`;
-            }
-            console.log('Fetching support file:', fileName);
+        // Use hardcoded text for JA, could expand logic if we had other constants
+        let text = SUPPORT_TEXT_JA;
 
-            const response = await fetch(fileName + '?t=' + Date.now(), { cache: 'no-store' });
-
-            // Fallback to support.txt (JA) if localized file not found
-            let text;
-            if (!response.ok) {
-                if (fileName !== 'support.txt') {
-                    const fallbackResponse = await fetch('support.txt?t=' + Date.now(), { cache: 'no-store' });
-                    text = fallbackResponse.ok ? await fallbackResponse.text() : "Support content not found.";
-                } else {
-                    throw new Error('Support fetch failed');
-                }
-            } else {
-                text = await response.text();
-            }
-
-            // Linkify and set innerHTML
-            if (this.el.supportFullContent) {
-                this.el.supportFullContent.innerHTML = this.linkify(text);
-            }
-        } catch (e) {
-            console.error(e);
-            if (this.el.supportFullContent) {
-                this.el.supportFullContent.innerHTML = this.linkify("GitHub Repository: https://github.com/disxord888-hash/Richb_timer/tree/main");
-            }
+        // Linkify and set innerHTML
+        if (this.el.supportFullContent) {
+            this.el.supportFullContent.innerHTML = this.linkify(text).replace(/\n/g, '<br>');
         }
     },
 
