@@ -1,3 +1,16 @@
+Richb Timer サポート
+
+GitHub リポジトリ:
+https://github.com/disxord888-hash/Richb_timer/tree/main
+
+バグの報告や機能のリクエストがある場合は、GitHubのIssueで報告してください。
+
+【更新方法（YouTube）】
+https://www.youtube.com/watch?v=-W4yeXw3VL0
+
+【サポートサーバー（discord）】
+https://discord.gg/V2JmS2D7uS
+
 -更新履歴-
 v0.11.03
 (2026/01/08)
