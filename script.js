@@ -25,10 +25,7 @@ https://github.com/disxord888-hash/Richb_timer/tree/main
 バグの報告や機能のリクエストがある場合は、GitHubのIssueで報告してください。
 
 【更新方法（YouTube）】
-https://www.youtube.com/watch?v=-W4yeXw3VL0
-
-【サポートサーバー（discord）】
-https://discord.gg/V2JmS2D7uS`;
+https://www.youtube.com/watch?v=-W4yeXw3VL0`;
 
 const NOTICE_TEXT_JA = `[常駐]更新のため、1日に1回は、サイトのデータを消してください。
 表示切替は[🔳],[👁]ボタンでできるよ！
@@ -2252,4 +2249,3 @@ const App = {
 window.addEventListener('DOMContentLoaded', () => {
     App.init();
 });
-
